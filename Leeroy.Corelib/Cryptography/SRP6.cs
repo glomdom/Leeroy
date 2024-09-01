@@ -214,4 +214,18 @@ public static class SRP6 {
 
         return proof;
     }
+
+    public static byte[] CalculateClientPublicKey(
+        ReadOnlySpan<byte> clientPrivateKey,
+        byte               generator,
+        ReadOnlySpan<byte> largeSafePrime
+    ) {
+        var clientPrivateKeyInt = clientPrivateKey.ToBigInteger();
+        var generatorInt = generator.ToBigInteger();
+        var largeSafePrimeInt = largeSafePrime.ToBigInteger();
+
+        var key = generatorInt.ModPow(clientPrivateKeyInt, largeSafePrimeInt);
+
+        return key.ToPaddedArray(KeyLength);
+    }
 }
