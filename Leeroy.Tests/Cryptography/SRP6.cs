@@ -274,4 +274,20 @@ public class SRP6 {
             Assert.That(result.Reverse().ToArray().ToHexString(true), Is.EqualTo(expected));
         }
     }
+    
+    [Test]
+    public void TestCalculateClientPublicKey() {
+        var data = File.ReadAllLines($"{TestDataRoot}/A_values.txt");
+        Assert.That(data, Is.Not.Empty);
+        
+        foreach (var line in data) {
+            var split = line.Split(" ");
+            var clientPublicKey = split[0].ToByteArray();
+
+            var expected = split[1];
+            var result = Corelib.Cryptography.SRP6.CalculateClientPublicKey(clientPublicKey, 7, Corelib.Cryptography.SRP6.LARGE_SAFE_PRIME_LE);
+            
+            Assert.That(result.Reverse().ToArray().ToHexString(true), Is.EqualTo(expected));
+        }
+    }
 }
