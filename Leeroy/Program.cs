@@ -19,11 +19,13 @@
 
 using Akka.Actor;
 using Leeroy.Corelib.Common;
+using Leeroy.Corelib.Login;
 
 namespace Leeroy; 
 
 internal static class Program {
     private static string RevisionName = "Azeroth";
+    private static string SystemName = "Leeroy";
 
     private static ActorSystem _actorSystem = null!;
     
@@ -31,26 +33,42 @@ internal static class Program {
         PrintTitle();
         
         Logger.Information("Starting {0}..", Logger.Args("Akka.NET"));
-        if (!AkkaConfig.CreateActorSystem("leeroy", out var system)) {
+        if (!AkkaConfig.CreateActorSystem(SystemName, out var system)) {
             Logger.Fatal("Failed to create {0} root system. Check above for error messages.", Logger.Args("Akka.NET"));
             Console.ReadKey();
 
             return;
         }
         
-        // TODO: Start login server.
-
         _actorSystem = system;
         Logger.Information("{0} system created.", Logger.Args("Akka.NET"));
+
+        var loginServer = StartLoginServer();
+
+        Logger.Information("Leeroy has started.");
+        
+        while (true) {
+            Thread.Sleep(300000);
+        }
     }
 
     private static void PrintTitle() {
         Console.WriteLine( @"    _                                                                  ");
         Console.WriteLine($@"   | |     ___   ___  _ __  ___   _   _       Revision: {RevisionName} ");
         Console.WriteLine( @"   | |    / _ \ / _ \| '__|/ _ \ | | | |                               ");
-        Console.WriteLine( @"   | |___|  __/|  __/| |  | (_) || |_| |      WoW: Clasic's best.      ");
+        Console.WriteLine( @"   | |___|  __/|  __/| |  | (_) || |_| |      WoW: Classic's best.     ");
         Console.WriteLine( @"   |_____|\___| \___||_|   \___/  \__, |                               ");
         Console.WriteLine( @" -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-  |___/ -=-                            ");
         Console.WriteLine();
+    }
+    
+    private static IActorRef StartLoginServer() {
+        const string loginServerName = "LoginServer";
+
+        var loginServer = _actorSystem.ActorOf(Props.Create(() => new LoginServer()), loginServerName);
+        
+        Logger.Information("Login server created under {0}: {1}", Logger.Args(_actorSystem.Name, loginServerName));
+
+        return loginServer;
     }
 }
