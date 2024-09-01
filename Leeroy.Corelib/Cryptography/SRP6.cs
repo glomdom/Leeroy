@@ -187,4 +187,15 @@ public static class SRP6 {
         
         return sessionKey;
     }
+
+    public static byte[] CalculateServerProof(
+        ReadOnlySpan<byte> clientPublicKey,
+        ReadOnlySpan<byte> clientProof,
+        ReadOnlySpan<byte> sessionKey
+    ) {
+        var full = Utilities.ConcatArrays(clientPublicKey, clientProof, sessionKey);
+        var proof = SHA1.HashData(full);
+
+        return proof;
+    }
 }

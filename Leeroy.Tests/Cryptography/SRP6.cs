@@ -231,4 +231,22 @@ public class SRP6 {
             Assert.That(result.Reverse().ToArray().ToHexString(true), Is.EqualTo(expected));
         }
     }
+    
+    [Test]
+    public void TestCalculateServerProof() {
+        var data = File.ReadAllLines($"{TestDataRoot}/m2_values.txt");
+        Assert.That(data, Is.Not.Empty);
+        
+        foreach (var line in data) {
+            var split = line.Split(" ");
+            var clientPublicKey = split[0].ToByteArray();
+            var clientProof = split[1].ToByteArray();
+            var sessionKey = split[2].ToByteArray();
+
+            var expected = split[3];
+            var result = Corelib.Cryptography.SRP6.CalculateServerProof(clientPublicKey, clientProof, sessionKey);
+            
+            Assert.That(result.Reverse().ToArray().ToHexString(true), Is.EqualTo(expected));
+        }
+    }
 }

@@ -36,6 +36,16 @@ public static class Utilities {
 
         return concatted.ToArray();
     }
+    
+    public static byte[] ConcatArrays(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, ReadOnlySpan<byte> third) {
+        Span<byte> concatted = stackalloc byte[first.Length + second.Length + third.Length];
+
+        first.CopyTo(concatted);
+        second.CopyTo(concatted[first.Length..]);
+        third.CopyTo(concatted[(first.Length + second.Length)..]);
+
+        return concatted.ToArray();
+    }
 
     /// <summary>
     /// Uppercases a username or password. Does some checks.
