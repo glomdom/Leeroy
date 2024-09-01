@@ -17,15 +17,40 @@
 
 */
 
-using Leeroy.Corelib;
-using Leeroy.Corelib.Cryptography;
+using Akka.Actor;
+using Leeroy.Corelib.Common;
 
-// testing
+namespace Leeroy; 
 
-var result = SRP6.CalculateClientPublicKey(
-    "A47DD4CD70DA1B0EF7E1FA8C02DE68AF0CEFCC77ACA287FBC3ADCDE0E7B78FE7".ToByteArray(),
-    7,
-    SRP6.LARGE_SAFE_PRIME_LE
-);
+internal static class Program {
+    private static string RevisionName = "Azeroth";
 
-Console.WriteLine(result.Reverse().ToArray().ToHexString(true));
+    private static ActorSystem _actorSystem = null!;
+    
+    private static void Main() {
+        PrintTitle();
+        
+        Logger.Information("Starting {0}..", Logger.Args("Akka.NET"));
+        if (!AkkaConfig.CreateActorSystem("leeroy", out var system)) {
+            Logger.Fatal("Failed to create {0} root system. Check above for error messages.", Logger.Args("Akka.NET"));
+            Console.ReadKey();
+
+            return;
+        }
+        
+        // TODO: Start login server.
+
+        _actorSystem = system;
+        Logger.Information("{0} system created.", Logger.Args("Akka.NET"));
+    }
+
+    private static void PrintTitle() {
+        Console.WriteLine( @"    _                                                                  ");
+        Console.WriteLine($@"   | |     ___   ___  _ __  ___   _   _       Revision: {RevisionName} ");
+        Console.WriteLine( @"   | |    / _ \ / _ \| '__|/ _ \ | | | |                               ");
+        Console.WriteLine( @"   | |___|  __/|  __/| |  | (_) || |_| |      WoW: Clasic's best.      ");
+        Console.WriteLine( @"   |_____|\___| \___||_|   \___/  \__, |                               ");
+        Console.WriteLine( @" -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-  |___/ -=-                            ");
+        Console.WriteLine();
+    }
+}

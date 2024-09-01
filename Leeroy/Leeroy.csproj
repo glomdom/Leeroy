@@ -11,6 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Akka" Version="1.5.28-beta1" />
       <PackageReference Include="Serilog" Version="4.0.2-dev-02226" />
       <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
       <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
@@ -19,6 +20,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Leeroy.Corelib\Leeroy.Corelib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="conf\akka.conf" />
+      <Content Include="conf\akka.conf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>
