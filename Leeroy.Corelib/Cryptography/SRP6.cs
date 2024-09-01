@@ -38,7 +38,7 @@ public static class SRP6 {
         0xab, 0x3c, 0x82, 0x87, 0x2a, 0x3e, 0x9b, 0xb7,
     };
 
-    private static ReadOnlySpan<byte> PRECALCULATED_XOR_HASH => new byte[] {
+    public static ReadOnlySpan<byte> PRECALCULATED_XOR_HASH => new byte[] {
         0xdd, 0x7b, 0xb0, 0x3a, 0x38, 0xac, 0x73, 0x11, 0x3, 0x98,
         0x7c, 0x5a, 0x50, 0x6f, 0xca, 0x96, 0x6c, 0x7b, 0xc2, 0xa7,
     };
@@ -194,6 +194,22 @@ public static class SRP6 {
         ReadOnlySpan<byte> sessionKey
     ) {
         var full = Utilities.ConcatArrays(clientPublicKey, clientProof, sessionKey);
+        var proof = SHA1.HashData(full);
+
+        return proof;
+    }
+
+    public static byte[] CalculateClientProof(
+        ReadOnlySpan<byte> xorhash,
+        string             username,
+        ReadOnlySpan<byte> sessionKey,
+        ReadOnlySpan<byte> clientPublicKey,
+        ReadOnlySpan<byte> serverPublicKey,
+        ReadOnlySpan<byte> salt
+    ) {
+        var normalizedUsername = Utilities.NormalizeUsernameOrPassword(username);
+        var hashed_username = SHA1.HashData(Encoding.UTF8.GetBytes(normalizedUsername));
+        var full = Utilities.ConcatArrays(xorhash, hashed_username, salt, clientPublicKey, serverPublicKey, sessionKey);
         var proof = SHA1.HashData(full);
 
         return proof;
