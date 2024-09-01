@@ -1,0 +1,5 @@
+/.idea/
+*.DotSettings.user
+
+/Leeroy*/bin/
+/Leeroy*/obj/
